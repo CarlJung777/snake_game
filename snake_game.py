@@ -1,5 +1,7 @@
 import pygame
 import random
+from settings import ICON_PATH
+
 
 pygame.init()
 
@@ -13,7 +15,9 @@ clock = pygame.time.Clock()
 running = True
 # 背景颜色
 backgroundColor = (102, 153, 153)
-
+# 加载图标
+icon = pygame.image.load(ICON_PATH)
+pygame.display.set_icon(icon)
 
 # 蛇
 class Snake:
