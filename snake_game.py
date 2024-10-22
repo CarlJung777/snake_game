@@ -22,6 +22,7 @@ pygame.display.set_icon(icon)
 
 # 蛇
 class Snake:
+    # 初始化对象的属性
     def __init__(self, speed=5):
         self.body = [(100, 100), (90, 100), (80, 100)]
         self.color = (26, 140, 255)
@@ -139,5 +140,5 @@ while running:
     pygame.display.flip()
 
     clock.tick(60) 
-    
+
 pygame.quit()
