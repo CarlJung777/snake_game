@@ -23,7 +23,7 @@ pygame.display.set_icon(icon)
 # 蛇
 class Snake:
     # 初始化对象的属性
-    def __init__(self, speed=5, color = (26, 140, 255), size = 10):
+    def __init__(self, speed=2, color = (26, 140, 255), size = 20):
         #三个元组表示蛇的三个身体段 （x, y）  
         self.body = [(100, 100), (90, 100), (80, 100)]
         self.color = color
@@ -73,11 +73,17 @@ class Snake:
         # 检查蛇头是否超出边界 X 坐标像素是否小于0 或者 X 大于屏幕宽度 或者 Y 坐标像素是否小于0 或者 Y 大于屏幕高度
         return head_x < 0 or head_x >= screenWidth or head_y < 0 or head_y >= screenHeight             
 
+    def grow(self, length=3):
+        # 在蛇的最后一个部分再增加指定数量的身体段
+        for _ in range(length):
+            self.body.append(self.body[-1])  # 添加与蛇尾相同的坐标
+
+        
 # 食物
 class Food:
     def __init__(self):
         self.color = (255, 0, 0)
-        self.size = 10
+        self.size = 20
         self.position = self.randomize_position()
 
     def randomize_position(self):
@@ -92,7 +98,7 @@ class Food:
         pygame.draw.rect(surface, self.color, (self.position[0], self.position[1], self.size, self.size))
 
 # 创建蛇和蛇对象
-snake = Snake(speed=5)
+snake = Snake(speed=2)
 food = Food()
 
 
@@ -100,9 +106,20 @@ food = Food()
 def reset_game():
     # 关键字 global 声明要使用的 snake, food 是全局变量
     global snake, food
-    snake = Snake(speed=5)
+    snake = Snake(speed=2)
     food = Food()
 
+# 吃到没
+def check_eat_food():
+    # 创建蛇头的矩形
+    snake_head_rect = pygame.Rect(snake.body[0][0], snake.body[0][1], snake.size, snake.size)
+    # 创建食物的矩形
+    food_rect = pygame.Rect(food.position[0], food.position[1], food.size, food.size)
+    
+    # 检测两个矩形是否重叠
+    if snake_head_rect.colliderect(food_rect):
+        snake.grow(length=20)  # 吃到食物时蛇变长
+        food.position = food.randomize_position()  # 随机生成新食物的位置
 
 while running:
 
@@ -142,6 +159,9 @@ while running:
                     waiting = False
     else:
         snake.update()  # 更新蛇的位置
+
+    # 调用吃到没
+    check_eat_food()
     screen.fill(backgroundColor)
 
     # 绘制蛇和食物
